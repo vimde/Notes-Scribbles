@@ -97,3 +97,51 @@ MATCH (:Person {name:'Tom Hanks'})-[rel:ACTED_IN]->(m:Movie) RETURN m.title, rel
 ```
 MATCH (:Person)-[rel:ACTED_IN]-(m:Movie {title: 'The Matrix'}) RETURN rel.roles
 ```
+
+## Exercise 4:
+### 4.1. Retrieve all movies that Tom Cruise acted in and return their titles
+```
+MATCH (p:Person)-[:ACTED_IN]->(m:Movie) WHERE p.name = 'Tom Cruise' RETURN m.title
+```
+### 4.2. Retrieve all actors that were born in the 70’s and return their names and year born
+```
+MATCH (p:Person) WHERE 1970 <= p.born < 1980 RETURN p.name AS Name, p.born AS `Year Born`
+```
+### 4.3. Retrieve the actors who acted in the movie The Matrix who were born after 1960, and return their names and year born
+```
+MATCH (p:Person)-[:ACTED_IN]->(m:Movie) WHERE m.title = 'The Matrix' AND p.born > 1960 RETURN p.name AS Name, p.born AS `Year born`
+```
+### 4.4. Retrieve all movies released in 2000 by testing the node label and the released property, returning the movie titles
+```
+MATCH (m) WHERE m:Movie AND m.released = 2000 RETURN m.title AS `Movie Name`
+```
+### 4.5. Retrieve all people that wrote movies by testing the relationship between two nodes, returning the names of the people and the titles of the movies
+```
+MATCH (p)-[rel]->(m) WHERE p:Person AND type(rel) = 'WROTE' AND m:Movie RETURN p.name AS People, m.title AS `Movie name`
+```
+### 4.6. Retrieve all people in the graph that do not have a born property, returning their names
+```
+MATCH (p:Person) WHERE NOT EXISTS (p.born) RETURN p.name AS People
+```
+### 4.7. Retrieve all people related to movies where the relationship has the rating property, then return their name, movie title, and the rating
+```
+MATCH (p:Person)-[rel]->(m:Movie) WHERE EXISTS(rel.rating) RETURN p.name AS People, m.title AS `Movie Name`, rel.rating AS Rating
+```
+### 4.8. Retrieve all actors whose name begins with James, returning their names
+```
+MATCH (p:Person)-[:ACTED_IN]->(:Movie) WHERE p.name STARTS WITH 'James' RETURN p.name AS People
+```
+### 4.9. Retrieve all REVIEW relationships from the graph where the summary of the review contains the string fun, returning the movie title reviewed and the rating and summary of the relationship
+```
+MATCH (:Person)-[rel:REVIEWED]->(m:Movie) WHERE toLower(rel.summary) CONTAINS 'fun' RETURN m.title AS Title, rel.rating AS Rating, 
+rel.summary AS Summary
+```
+### Retrieve all movies in the database that have love in their tagline and return the movie titles
+```
+MATCH (m:Movie) WHERE toLower(m.tagline) CONTAINS 'love' RETURN m.title AS Title
+```
+### Retrieve movies in the database, specifying a regular expression for the content of the tagline
+```
+MATCH (m:Movie) WHERE m.tagline =~ '(?i).*love.*' RETURN m.title AS Title
+```
+### 4.10. Retrieve all people who have produced a movie, but have not directed a movie, returning their names and the movie titles
