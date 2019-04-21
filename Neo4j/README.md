@@ -172,3 +172,36 @@ RETURN m.title AS Title, m.released AS `Released Year`
 MATCH (:Person)-[rel:ACTED_IN]->(m:Movie) WHERE m.title IN rel.roles
 RETURN m.title AS Title, rel.roles AS Role
 ```
+
+## Exercise 5:
+### 5.1. Write a Cypher query that retrieves all movies that Gene Hackman has acted it, along with the directors of the movies. In addition, retrieve the actors that acted in the same movies as Gene Hackman. Return the name of the movie, the name of the director, and the names of actors that worked with Gene Hackman
+```
+MATCH (gene:Person)-[:ACTED_IN]->(m:Movie)<-[:DIRECTED]-(dir:Person),
+(others:Person)-[:ACTED_IN]->(m)
+WHERE gene.name = 'Gene Hackman'
+RETURN m.title AS `Movie name`, dir.name AS Director, others.name AS `Other Actors`
+```
+### 5.2. Retrieve all nodes that the person named James Thompson directly has the FOLLOWS relationship in either direction
+```
+MATCH (p:Person)-[:FOLLOWS]-(oth:Person) 
+WHERE p.name = 'James Thompson'
+RETURN p, oth
+```
+### 5.3. Modify the query in 5.2. to retrieve nodes that are exactly three hops away
+```
+MATCH (p:Person)-[:FOLLOWS * 3]-(oth:Person)
+WHERE p.name = 'James Thompson'
+RETURN p, oth
+```
+### 5.4. Modify the query to retrieve nodes that are one and two hops away
+```
+MATCH (p:Person)-[:FOLLOWS * 1..2]-(oth:Person)
+WHERE p.name = 'James Thompson'
+RETURN p, oth
+```
+### 5.5. Modify the query to retrieve all nodes that are connected to James Thompson by a Follows relationship no matter how many hops are required
+```
+MATCH (p:Person)-[:FOLLOWS*]-(oth:Person)
+WHERE p.name = 'James Thompson'
+RETURN p, oth
+```
