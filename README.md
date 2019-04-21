@@ -20,3 +20,9 @@
 * IP header contains Source Address, Destination Address, Protocol Id (TCP etc), Version (IPv4 or v6), TTL, Packet Id, Fragment Offset
 * Checksum is calculated over the complete header
 
+### Layering
+* Modularity: breaks down the system into smaller ones
+* Reuse
+* Separation of concerns
+* Well defined service
+* Continuous improvement
