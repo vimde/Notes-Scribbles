@@ -233,3 +233,18 @@ RETURN m.title AS Movie, collect(p.name) AS Reviewers, count(p) AS `Number of re
 MATCH (dir:Person)-[:DIRECTED]->(m:Movie)<-[:ACTED_IN]-(actors:Person)
 RETURN dir.name AS Director, count(actors) AS `Number of Actors`, collect(actors.name) AS `Actors List`
 ```
+### 5.11. Retrieve the actors who have acted in exactly five movies, returning the name of the actor, and the list of movies for that actor
+```
+MATCH (actor:Person)-[:ACTED_IN]-(m:Movie)
+WITH actor, count(m) AS numOfMovies, collect(m.title) AS `Movies List`
+WHERE numOfMovies = 5
+RETURN actor.name, `Movies List`
+```
+### 5.12. Retrieve the movies that have at least 2 directors, and optionally the names of people who reviewed the movies
+```
+MATCH (m:Movie)
+WITH m, size((:Person)-[:DIRECTED]->(m)) AS numOfDirectors
+WHERE numOfDirectors >= 2
+OPTIONAL MATCH (reviewer:Person)-[:REVIEWED]->(m)
+RETURN m.title AS Movie, reviewer.name
+```
