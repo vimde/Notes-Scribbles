@@ -205,3 +205,31 @@ MATCH (p:Person)-[:FOLLOWS*]-(oth:Person)
 WHERE p.name = 'James Thompson'
 RETURN p, oth
 ```
+### 5.6. Write a Cypher query to retrieve all people in the graph whose name begins with Tom and optionally retrieve all people named Tom who directed a movie
+```
+MATCH (tom:Person)
+WHERE tom.name STARTS WITH 'Tom'
+OPTIONAL MATCH (tom)-[:DIRECTED]-(:Movie)
+RETURN tom
+```
+### 5.7. Retrieve actors and the movies they have acted in, returning each actor’s name and the list of movies they acted in
+```
+MATCH (p:Person)-[:ACTED_IN]-(m:Movie)
+RETURN collect(m.title) AS Movies, p.name AS Actor
+```
+### 5.8. Retrieve all movies that Tom Cruise has acted in and the co-actors that acted in the same movie, returning the movie title and the list of co-actors that Tom Cruise worked with
+```
+MATCH (tom:Person)-[:ACTED_IN]-(m:Movie)<-[:ACTED_IN]-(coactors:Person)
+WHERE tom.name = 'Tom Cruise'
+RETURN m.title AS Movie, collect(coactors.name) AS CoActors
+```
+### 5.9. Retrieve all people who reviewed a movie, returning the list of reviewers and how many reviewers reviewed the movie
+```
+MATCH (p:Person)-[:REVIEWED]->(m:Movie)
+RETURN m.title AS Movie, collect(p.name) AS Reviewers, count(p) AS `Number of reviewers`
+```
+### 5.10. Retrieve all directors, their movies, and people who acted in the movies, returning the name of the director, the number of actors the director has worked with, and the list of actors
+```
+MATCH (dir:Person)-[:DIRECTED]->(m:Movie)<-[:ACTED_IN]-(actors:Person)
+RETURN dir.name AS Director, count(actors) AS `Number of Actors`, collect(actors.name) AS `Actors List`
+```
