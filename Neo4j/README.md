@@ -293,7 +293,8 @@ RETURN p.name AS ACTOR, Movies
 ### 7.1. Write a Cypher query that retrieves all actors that acted in movies, and also retrieves the producers for those movies. During the query, collect the names of the actors and the names of the producers. Return the movie titles, along with the list of actors for each movie, and the list of producers for each movie making sure there is no duplication of data. Order the results returned based upon the size of the list of actors
 ```
 MATCH (actor:Person)-[:ACTED_IN]->(m:Movie)<-[:PRODUCED]-(director:Person)
-RETURN DISTINCT m.title AS Movie, collect(DISTINCT actor.name) AS Actors, collect(DISTINCT director.name) AS Directors
+RETURN DISTINCT m.title AS Movie, collect(DISTINCT actor.name) AS Actors, 
+collect(DISTINCT director.name) AS Directors
 ORDER BY size(Actors)
 ```
 ### 7.2. Write a Cypher query that retrieves all actors that acted in movies, and collects the list of movies for any actor that acted in more than five movies. Return the name of the actor and the list
@@ -315,5 +316,6 @@ RETURN actor.name AS Actor, movie.title AS Title
 ```
 MATCH (actor:Person)-[:ACTED_IN]->(m:Movie)
 WHERE actor.name = 'Tom Hanks'
-RETURN m.title AS Movie, m.released AS Year, date().year - m.released AS `Years Ago Released`, m.released - actor.born AS Age
+RETURN m.title AS Movie, m.released AS Year, date().year - m.released AS `Years Ago Released`, 
+m.released - actor.born AS Age
 ```
