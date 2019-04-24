@@ -319,3 +319,38 @@ WHERE actor.name = 'Tom Hanks'
 RETURN m.title AS Movie, m.released AS Year, date().year - m.released AS `Years Ago Released`, 
 m.released - actor.born AS Age
 ```
+
+## Exercise 8
+### 8.1. Create a Movie node for the movie with the title, Forrest Gump
+```
+CREATE (:Movie {title: 'Forrest Gump'})
+```
+### 8.2. Retrieve the node you just created by its title
+```
+MATCH (m:Movie {title: 'Forrest Gump'}) RETURN m
+```
+### 8.3. Create a Person node for the person with the name, Robin Wright
+```
+CREATE (:Person {name: 'Robin Wright'})
+```
+### 8.4. Retrieve the Person node you just created by its name
+```
+MATCH (p:Person {name: 'Robin Wright'}) RETURN p
+```
+### 8.5. Add the label OlderMovie to any Movie node that was released before 2010
+```
+MATCH (m:Movie)
+WHERE m.released < 2010
+SET m:OlderMovie
+RETURN DISTINCT labels(m)
+```
+### 8.6. Retrieve all older movie nodes to test that the label was indeed added to these nodes
+```
+MATCH (m:OlderMovie) RETURN m
+```
+### 8.7. Add the label Female to all Person nodes that has a person whose name starts with Robin
+```
+MATCH (p:Person) WHERE p.name STARTS WITH 'Robin'
+SET p:Female
+RETURN DISTINCT labels(p)
+```
