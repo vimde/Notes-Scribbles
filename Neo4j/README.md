@@ -354,3 +354,52 @@ MATCH (p:Person) WHERE p.name STARTS WITH 'Robin'
 SET p:Female
 RETURN DISTINCT labels(p)
 ```
+### 8.8. Retrieve all Female nodes
+```
+MATCH (f:Female) RETURN f
+```
+### 8.9. We’ve decided to not use the Female label. Remove the Female label from the nodes that have this label
+```
+MATCH (f:Female) REMOVE f:Female
+```
+### 8.10. View the current schema of the graph
+```
+CALL db.schema()
+```
+### 8.11. Add the following properties to the movie, Forrest Gump: released: 1994, tagline: Life is like a box of chocolates… you never know what you’re gonna get, lengthInMinutes: 142
+```
+MATCH (m:Movie) WHERE m.title = 'Forrest Gump' 
+SET m += {released:1994, tagline:'Life is like a box of chocolates... You never know what you\'re gonna get', 
+  lengthInMinutes:142}
+RETURN m
+```
+### 8.12. Retrieve this OlderMovie node to confirm that the properties and label have been properly set
+```
+MATCH (om:OlderMovie) WHERE om.title = 'Forrest Gump' RETURN om
+```
+### 8.13. Add the following properties to the person, Robin Wright: born: 1966, birthPlace: Dallas
+```
+MATCH (p:Person) WHERE p.name = 'Robin Wright' 
+SET p.born = 1966, p.birthPlace = 'Dallas'
+RETURN p
+```
+### 8.14. Retrieve this Person node to confirm that the properties have been properly set
+```
+MATCH (p:Person) WHERE p.name = 'Robin Wright' RETURN p.name, p.born, p.birthPlace
+```
+### 8.15. Remove the lengthInMinutes property from the movie, Forrest Gump
+```
+MATCH (m:Movie) WHERE m.title = 'Forrest Gump' REMOVE m.lengthInMinutes
+```
+### 8.16. Retrieve the Forrest Gump node to confirm that the property has been removed
+```
+MATCH (m:Movie) WHERE m.title = 'Forrest Gump' RETURN m
+```
+### 8.17. Remove the birthPlace property from the person, Robin Wright (another way to remove the property)
+```
+MATCH (p:Person) WHERE p.name = 'Robin Wright' SET p.birthPlace = null
+```
+### 8.18. Retrieve the Robin Wright node to confirm that the property has been removed
+```
+MATCH (p:Person) WHERE p.name = 'Robin Wright' RETURN p
+```
