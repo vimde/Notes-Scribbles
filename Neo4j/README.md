@@ -479,7 +479,7 @@ SET rel.roles = ['Lt. Dan Taylor']
 ```
 ### 9.12. Remove the research property from the HELPED relationship from Tom Hanks to Gary Sinise
 ```
-MATCH (tom:Person {name:'Tom Hanks')-[:HELPED]->(gary:Person {name:'Gary Sinise'})
+MATCH (tom:Person {name:'Tom Hanks')-[rel:HELPED]->(gary:Person {name:'Gary Sinise'})
 REMOVE rel.research
 ```
 ### 9.13. Query the graph to confirm that your modifications were made to the graph
