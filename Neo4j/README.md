@@ -403,3 +403,88 @@ MATCH (p:Person) WHERE p.name = 'Robin Wright' SET p.birthPlace = null
 ```
 MATCH (p:Person) WHERE p.name = 'Robin Wright' RETURN p
 ```
+## Exercise 9
+### 9.1. Create the ACTED_IN relationship between the actors, Robin Wright, Tom Hanks, and Gary Sinise and the movie, Forrest Gump
+```
+MATCH (m:Movie)
+WHERE m.title = 'Forrest Gump'
+MATCH (p:Person)
+WHERE p.name = 'Robin Wright' OR p.name = 'Tom Hanks' OR p.name = 'Gary Sinise'
+CREATE (p)-[:ACTED_IN]->(m)
+```
+### 9.2. Create the DIRECTED relationship between Robert Zemeckis and the movie, Forrest Gump
+```
+MATCH (p:Person {name:'Robert Zemeckis'})
+MATCH (m:Movie {title:'Forrest Gump'})
+CREATE (p)-[:DIRECTED]->(m)
+```
+### 9.3. Create a new relationship, HELPED from Tom Hanks to Gary Sinise
+```
+MATCH (tom:Person {name:'Tom Hanks'})
+MATCH (gary:Person {name:'Gary Sinise'})
+CREATE (tom)-[:HELPED]->(gary)
+```
+### 9.4. Write a Cypher query to return all nodes connected to the movie, Forrest Gump, along with their relationships
+```
+MATCH (m:Movie)-[rel]-(p:Person) WHERE m.title = 'Forrest Gump'
+RETURN m, rel, p
+```
+### 9.5. Add the roles property to the three ACTED_IN relationships that you just created to the movie, Forrest Gump using this information: Tom Hanks played the role, Forrest Gump. Robin Wright played the role, Jenny Curran. Gary Sinise played the role, Lieutenant Dan Taylor
+```
+MATCH (tom:Person {name:'Tom Hanks'})-[rel:ACTED_IN]->(m:Movie {title:'Forrest Gump'})
+SET rel.roles = ['Forrest Gump']
+MATCH (robin:Person {name:'Robin Wright'})-[rel:ACTED_IN]->(m2:Movie {title:'Forrest Gump'})
+SET rel.roles = ['Jenny Curran']
+MATCH (gary:Person {name:'Gary Sinise'})-[rel:ACTED_IN]->(m3:Movie {title:'Forrest Gump'})
+SET rel.roles = ['Lieutenant Dan Taylor']
+
+//Another query
+
+MATCH (p:Person)-[rel:ACTED_IN]->(m:Movie)
+WHERE m.title = 'Forrest Gump'
+SET rel.roles =
+CASE p.name
+  WHEN 'Tom Hanks' THEN ['Forrest Gump']
+  WHEN 'Robin Wright' THEN ['Jenny Curran']
+  WHEN 'Gary Sinise' THEN ['Lieutenant Dan Taylor']
+END
+```
+### 9.6. Add a new property, research to the HELPED relationship between Tom Hanks and Gary Sinise and set this property’s value to war history
+```
+MATCH (:Person {name:'Tom Hanks'})-[rel:HELPED]->(:Person {name:'Gary Sinise'})
+SET rel.research = 'war history'
+```
+### 9.7. View the current list of property keys in the graph
+```
+CALL db.propertyKeys
+```
+### 9.8. View the current schema of the graph
+```
+CALL db.schema
+```
+### 9.9. Query the graph to return the names and roles of actors in the movie, Forrest Gump
+```
+MATCH (actor:Person)-[rel:ACTED_IN]->(m:Movie {title:'Forrest Gump'})
+RETURN actor.name AS Actor, rel.roles AS Roles
+```
+### 9.10. Query the graph to retrieve information about any HELPED relationships
+```
+MATCH (p1:Person)-[rel:HELPED]->(p2:Person)
+RETURN p1.name, rel, p2.name
+```
+### 9.11. Modify the role that Gary Sinise played in the movie, Forrest Gump from Lieutenant Dan Taylor to Lt. Dan Taylor
+```
+MATCH (gary:Person {name:'Gary Sinise'})-[rel:ACTED_IN]->(m:Movie {title:'Forrest Gump'})
+SET rel.roles = ['Lt. Dan Taylor']
+```
+### 9.12. Remove the research property from the HELPED relationship from Tom Hanks to Gary Sinise
+```
+MATCH (tom:Person {name:'Tom Hanks')-[:HELPED]->(gary:Person {name:'Gary Sinise'})
+REMOVE rel.research
+```
+### 9.13. Query the graph to confirm that your modifications were made to the graph
+```
+MATCH (p:Person)-[rel:ACTED_IN]->(m:Movie)
+WHERE m.title = 'Forrest Gump'
+RETURN p, rel, m
+```
