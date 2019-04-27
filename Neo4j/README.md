@@ -660,3 +660,50 @@ m.rating AS Rating, collect(a.name) AS Actors
 ```
 :param ratingValue => 60
 ```
+## Exercise 13
+### 13.1. View the query plan for this Cypher statement
+```
+MATCH (r:Person)-[rel:REVIEWED]->(m:Movie)<-[:ACTED_IN]-(a:Person)
+WHERE m.released = $year AND
+      rel.rating > $ratingValue
+RETURN  DISTINCT r.name, m.title, m.released, rel.rating, collect(a.name)
+
+Query Plan:
+EXPLAIN MATCH (r:Person)-[rel:REVIEWED]->(m:Movie)<-[:ACTED_IN]-(a:Person)
+WHERE m.released = $year AND
+      rel.rating > $ratingValue
+RETURN  DISTINCT r.name, m.title, m.released, rel.rating, collect(a.name)
+```
+### 13.2. View the metrics for the query when the previous statement executes
+```
+PROFILE MATCH (r:Person)-[rel:REVIEWED]->(m:Movie)<-[:ACTED_IN]-(a:Person)
+WHERE m.released = $year AND
+      rel.rating > $ratingValue
+RETURN  DISTINCT r.name, m.title, m.released, rel.rating, collect(a.name)
+```
+### 13.3. Remove the labels from the nodes and relationships in the query and again view the metrics. Compare the db hits from the previous version of the statement
+```
+PROFILE MATCH (r)-[rel]->(m)<-[:ACTED_IN]-(a)
+WHERE m.released = $year AND
+      rel.rating > $ratingValue
+RETURN  DISTINCT r.name, m.title, m.released, rel.rating, collect(a.name)
+```
+### 13.4. Execute this long-running query in your original Neo4j Browser session that returns a lot of results. In the second Neo4j Browser window, monitor the running queries
+```
+//A bad Cypher query
+PROFILE MATCH (a)--(b)--(c)--(d)--(e)--(f)--(g)
+RETURN a
+//In the second browser window
+:queries // available only in the Enterprise Edition of Neo4j
+```
+### 13.5. Execute this long-running query in your original Neo4j Browser session and monitor the query in the second Neo4j Browser session
+```
+//An even worse query than the one in 13.4
+PROFILE MATCH (a), (b), (c), (d), (e) , (f), (g)
+RETURN count(id(a))
+```
+### 13.6. Kill a query
+```
+:queries
+//Double click on the icon to kill the long running query
+```
