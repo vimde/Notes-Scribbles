@@ -768,3 +768,16 @@ CALL db.constraints()
 ```
 DROP CONSTRAINT ON ()-[rel:ACTED_IN]-() ASSERT exists(rel.roles)
 ```
+## Exercise 15
+### 15.1. Create a single-property index on the born property of a Person node
+```
+CREATE INDEX ON :Person(born)
+```
+### 15.2. View the indexes defined for the graph
+```
+CALL db.indexes()
+```
+### 15.3. Drop the single-property index you just created for the born property of the Person nodes
+```
+DROP INDEX ON :Person(born)
+```
