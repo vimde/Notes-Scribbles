@@ -488,3 +488,29 @@ MATCH (p:Person)-[rel:ACTED_IN]->(m:Movie)
 WHERE m.title = 'Forrest Gump'
 RETURN p, rel, m
 ```
+## Exercise 10
+### 10.1. Delete the HELPED relationship from the graph
+```
+MATCH (:Person)-[rel:HELPED]-(:Person) DELETE rel
+```
+### 10.2. Query the graph to confirm that the relationship no longer exists
+```
+MATCH (:Person)-[rel:HELPED]-(:Person) RETURN rel
+```
+### 10.3. Query the graph to display Forrest Gump and all of its relationships
+```
+MATCH (m:Movie)-[rel]-(p:Person) WHERE m.title = 'Forrest Gump'
+RETURN m, rel, p
+```
+### 10.4. Try deleting the Forrest Gump node without detaching its relationships
+```
+MATCH (m:Movie) WHERE m.title = 'Forrest Gump' DELETE m //Results in error
+```
+### 10.5. Delete Forrest Gump, along with its relationships in the graph
+```
+MATCH (m:Movie {title:'Forrest Gump'}) DETACH DELETE m
+```
+### 10.6. Query the graph to confirm that the Forrest Gump node has been deleted
+```
+MATCH (m:Movie {title:'Forrest Gump'}) RETURN m
+```
