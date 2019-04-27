@@ -757,7 +757,8 @@ CREATE (m:Movie {title:'Back to the Future', released:2018, tagline:'The future 
 ```
 ### 14.12. Try adding the 2018 movie again
 ```
-CREATE (m:Movie {title:'Back to the Future', released:2018, tagline:'The future is ours'}) //Will result in error
+CREATE (m:Movie {title:'Back to the Future', released:2018, tagline:'The future is ours'}) 
+//Will result in error
 ```
 ### 14.13. Display the list of constraints defined in the graph
 ```
