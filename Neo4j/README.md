@@ -653,7 +653,7 @@ m.rating AS Rating, collect(a.name) AS Actors
 ```
 MATCH (p:Person)-[rel:REVIEWED]->(m:Movie)<-[:ACTED_IN]-(a:Person)
 WHERE m.released = $year AND rel.rating > $ratingValue
-RETURN DISTINCT p.name AS Reviewer, m.title AS Title, m.year AS `Release Data`, 
+RETURN DISTINCT p.name AS Reviewer, m.title AS Title, m.year AS Year, 
 m.rating AS Rating, collect(a.name) AS Actors
 ```
 ### 12.7. Modify the ratingValue parameter to be a different value, 60, and retest your query
@@ -706,4 +706,64 @@ RETURN count(id(a))
 ```
 :queries
 //Double click on the icon to kill the long running query
+```
+## Exercise 14
+### 14.1. Add a uniqueness constraint to the Person nodes in the graph, name should be unique
+```
+CREATE CONSTRAINT ON (p:Person) ASSERT (p.name) IS UNIQUE
+```
+### 14.2. Add Tom Hanks to the graph
+```
+CREATE (p:Person {name:'Tom Hanks'}) //This should result in an error because of the constraint added in 14.1.
+```
+### 14.3. Attempt to add an existence constraint to the Person nodes in the graph with the property born
+```
+CREATE CONSTRAINT ON (p:Person) ASSERT exists(p.born)
+//Results in an error because there are 'Person' nodes without the property 'born'
+```
+### 14.4. Update the existing Person nodes so that you set the born property to 0 for any nodes that do not exist
+```
+MATCH (p:Person) WHERE NOT exists(p.born) SET p.born = 0
+```
+### 14.5. Add the existence constraint to the graph for the born property
+```
+CREATE CONSTRAINT ON (p:Person) ASSERT exists(p.born)
+```
+### 14.6. Add Sean Penn to the graph where you do not specify a value for born
+```
+CREATE (p:Person {name:'Sean Penn'}) RETURN p
+```
+### 14.7. Add an existence constraint to the ACTED_IN relationship in the graph for the roles property
+```
+CREATE CONSTRAINT ON ()-[rel:ACTED_IN]-() ASSERT exists(rel.roles)
+```
+### 14.8. Add an ACTED_IN relationship from the person, Emil Eifrem to the movie, Forrest Gump where the roles property is not set
+```
+MATCH (p:Person), (m:Movie)
+WHERE p.name = 'Emil Eifrem' AND m.title = 'Forrest Gump'
+MERGE (p)-[:ACTED_IN]->(m)
+```
+### 14.9. Add a node key to the graph that will ensure that the combined values of title and released are unique for all Movie nodes
+```
+CREATE CONSTRAINT ON (m:Movie) ASSERT (m.title, m.released) IS NODE KEY
+```
+### 14.10. Add the movie, Back to the Future with a released value of 1985 and a tagline value of Our future
+```
+CREATE (m:Movie {title:'Back to the Future', released:1985, tagline:'Our future'}) RETURN m
+```
+### 14.11. Add the movie, Back to the Future with a released value of 2018 and a tagline value of The future is ours
+```
+CREATE (m:Movie {title:'Back to the Future', released:2018, tagline:'The future is ours'})
+```
+### 14.12. Try adding the 2018 movie again
+```
+CREATE (m:Movie {title:'Back to the Future', released:2018, tagline:'The future is ours'}) //Will result in error
+```
+### 14.13. Display the list of constraints defined in the graph
+```
+CALL db.constraints()
+```
+### 14.14. Drop the constraint that requires the ACTED_IN relationship to have a property, roles
+```
+DROP CONSTRAINT ON ()-[rel:ACTED_IN]-() ASSERT exists(rel.roles)
 ```
