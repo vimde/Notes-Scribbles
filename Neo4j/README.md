@@ -623,3 +623,40 @@ CASE p.name
   WHEN 'Robin Wright' THEN ['Jenny Curran']
 END
 ```
+## Exercise 12
+### 12.1. Write and execute a Cypher query that returns the names of people who reviewed movies and the actors in these movies by returning the name of the reviewer, the movie title reviewed, the release date of the movie, the rating given to the movie by the reviewer, and the list of actors for that particular movie
+```
+MATCH (p:Person)-[:REVIEWED]->(m:Movie)<-[:ACTED_IN]-(a:Person)
+RETURN DISTINCT p.name AS Reviewer, m.title AS Title, m.year AS `Release Data`, 
+m.rating AS Rating, collect(a.name) AS Actors
+```
+### 12.2. Add a parameter named year to your session with a value of 2000
+```
+:param year => 2000
+```
+### 12.3. Modify the Cypher query you just wrote to filter by the year parameter
+```
+MATCH (p:Person)-[:REVIEWED]->(m:Movie)<-[:ACTED_IN]-(a:Person)
+WHERE m.released = $year
+RETURN DISTINCT p.name AS Reviewer, m.title AS Title, m.year AS `Release Data`, 
+m.rating AS Rating, collect(a.name) AS Actors
+```
+### 12.4. Modify the year parameter to be a different value, 2006, and retest your query
+```
+:param year => 2006
+```
+### 12.5. Add a parameter named ratingValue to your session with a value of 65
+```
+:params {year:2006, ratingValue:65}
+```
+### 12.6. Modify the query you wrote previously to also filter the result returned by the rating for the movie
+```
+MATCH (p:Person)-[rel:REVIEWED]->(m:Movie)<-[:ACTED_IN]-(a:Person)
+WHERE m.released = $year AND rel.rating > $ratingValue
+RETURN DISTINCT p.name AS Reviewer, m.title AS Title, m.year AS `Release Data`, 
+m.rating AS Rating, collect(a.name) AS Actors
+```
+### 12.7. Modify the ratingValue parameter to be a different value, 60, and retest your query
+```
+:param ratingValue => 60
+```
